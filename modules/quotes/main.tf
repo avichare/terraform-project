@@ -32,7 +32,7 @@ resource "aws_security_group" "backend_quotes_sg" {
     cidr_blocks = "${var.ssh_cidr_blocks}"
   }
 
-  # HTTP access from anywhere
+  # Accessing on application port from ALB and front-end
   ingress {
     from_port   = "${var.app_port}"
     to_port     = "${var.app_port}"

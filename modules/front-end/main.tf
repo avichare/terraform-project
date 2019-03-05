@@ -19,7 +19,6 @@ data "aws_subnet" "default" {
   id    = "${data.aws_subnet_ids.default.ids[count.index]}"
 }
 
-
 resource "aws_security_group" "frontend_sg" {
   name        = "${var.role}_sg"
   description = "SG for ${var.role} app"
@@ -40,20 +39,20 @@ resource "aws_security_group" "frontend_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Access to app port from ALB
+  ingress {
+    from_port   = "${var.app_port}"
+    to_port     = "${var.app_port}"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # outbound internet access
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    security_groups = ["${aws_security_group.backend_newsfeed_sg.id}", "${aws_security_group.backend_quotes_sg.id}"]
   }
 }
 

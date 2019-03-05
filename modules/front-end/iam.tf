@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "s3access" {
   },
   statement {
     effect = "Allow"
-    actions = ["ssm:GetParameters"]
+    actions = ["ssm:GetParameter"]
     resources = ["arn:aws:ssm:eu-west-1:989401080428:parameter/newsfeed_token"]
   }
 }

@@ -32,13 +32,14 @@ resource "aws_security_group" "backend_newsfeed_sg" {
     cidr_blocks = "${var.ssh_cidr_blocks}"
   }
 
-  # HTTP access from anywhere
+  # Accessing on application port from ALB and front-end
   ingress {
     from_port   = "${var.app_port}"
     to_port     = "${var.app_port}"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
 
   # outbound internet access
   egress {
@@ -47,6 +48,15 @@ resource "aws_security_group" "backend_newsfeed_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_security_group_rule" "ingress_frontend_to_newsfeed" {
+  type                     = "ingress"
+  from_port                = "8082"
+  to_port                  = "8082"
+  protocol                 = "tcp"
+  security_group_id        = "${aws_security_group.backend_newsfeed_sg.id}"
+  source_security_group_id = "aws_security_group.frontend_sg.id"
 }
 
 resource "aws_lb" "backend_alb" {
