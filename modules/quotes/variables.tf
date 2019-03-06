@@ -2,15 +2,16 @@ variable "aws_region" {
   default     = "eu-west-1"
 }
 
-variable "role" {
-  default = "quotes"
+#SSH Key pair to login
+variable "key_name" {
+  default     = "ashish-key"
+  description = "Name of AWS key pair"
 }
 
-variable "environment" {}
-
-variable "app_port" {
-  default = 8083
-}
+# Route53 zone ID reference
+variable "zone_id" {
+  default = "XXXXXXXXXXXXX"
+  }
 
 # ubuntu-public-image
 variable "aws_amis" {
@@ -19,20 +20,25 @@ variable "aws_amis" {
   }
 }
 
-variable "ssh_cidr_blocks" {
-  default     = ["0.0.0.0/0"]
-  description = "It is not recommended to use this default value for Production env"
-}
-
-variable "key_name" {
-  default     = "ashish-key"
-  description = "Name of AWS key pair"
-}
-
 variable "instance_type" {
   default     = "t2.micro"
   description = "AWS instance type"
 }
+
+variable "role" {
+  default = "quotes"
+}
+
+variable "app_port" {
+  default = 8083
+}
+
+variable "cidr_blocks" {
+  default     = ["0.0.0.0/0"]
+  description = "It is not recommended to use this default value for Production env"
+}
+
+variable "environment" {}
 
 variable "asg_min" {}
 

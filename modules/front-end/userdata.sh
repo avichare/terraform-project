@@ -18,5 +18,9 @@ aws configure set region eu-west-1
 token_with_quotes=$(aws ssm get-parameter --name "newsfeed_token" --query Parameter.Value)
 token=$(echo "$token_with_quotes" | tr -d '"')
 export NEWSFEED_TOKEN=$token
+
+export NEWSFEED_SERVICE_URL="http://newsfeed.thoughtworks.local:8082"
+export QUOTES_SERVICE_URL="http://quotes.thoughtworks.local:8083"
+
 export APP_PORT=8081
 java -jar front-end.jar

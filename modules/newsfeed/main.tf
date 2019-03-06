@@ -29,7 +29,7 @@ resource "aws_security_group" "backend_newsfeed_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = "${var.ssh_cidr_blocks}"
+    cidr_blocks = "${var.cidr_blocks}"
   }
 
   # Accessing on application port from ALB and front-end
@@ -37,7 +37,7 @@ resource "aws_security_group" "backend_newsfeed_sg" {
     from_port   = "${var.app_port}"
     to_port     = "${var.app_port}"
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = "${var.cidr_blocks}"
   }
 
 
@@ -50,16 +50,7 @@ resource "aws_security_group" "backend_newsfeed_sg" {
   }
 }
 
-resource "aws_security_group_rule" "ingress_frontend_to_newsfeed" {
-  type                     = "ingress"
-  from_port                = "8082"
-  to_port                  = "8082"
-  protocol                 = "tcp"
-  security_group_id        = "${aws_security_group.backend_newsfeed_sg.id}"
-  source_security_group_id = "aws_security_group.frontend_sg.id"
-}
-
-resource "aws_lb" "backend_alb" {
+resource "aws_lb" "backend_alb_newsfeed" {
   name               = "${var.role}-alb"
   internal           = true
   load_balancer_type = "application"
@@ -91,7 +82,7 @@ resource "aws_alb_target_group" "internal" {
 }
 
   resource "aws_lb_listener" "backend" {
-  load_balancer_arn = "${aws_lb.backend_alb.arn}"
+  load_balancer_arn = "${aws_lb.backend_alb_newsfeed.arn}"
   port              = "80"
   protocol          = "HTTP"
 
@@ -99,4 +90,12 @@ resource "aws_alb_target_group" "internal" {
     type             = "forward"
     target_group_arn = "${aws_alb_target_group.internal.arn}"
   }
+}
+
+resource "aws_route53_record" "newsfeed_url" {
+  zone_id = "${var.zone_id}"
+  name    = "newsfeed.thoughtworks.local"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["${aws_lb.backend_alb_newsfeed.dns_name}"]
 }
