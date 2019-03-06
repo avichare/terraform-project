@@ -93,7 +93,7 @@ resource "aws_alb_target_group" "internal" {
 
 resource "aws_route53_record" "quotes_url" {
   zone_id = "${var.zone_id}"
-  name    = "quotes.thoughtworks.local"
+  name    = "quotes"
   type    = "CNAME"
   ttl     = "300"
   records = ["${aws_lb.backend_alb_quotes.dns_name}"]

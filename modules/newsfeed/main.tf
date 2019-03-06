@@ -94,7 +94,7 @@ resource "aws_alb_target_group" "internal" {
 
 resource "aws_route53_record" "newsfeed_url" {
   zone_id = "${var.zone_id}"
-  name    = "newsfeed.thoughtworks.local"
+  name    = "newsfeed"
   type    = "CNAME"
   ttl     = "300"
   records = ["${aws_lb.backend_alb_newsfeed.dns_name}"]
